@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const customerRouter = require('./routes/customer'); // make sure the path is correct
+const customerRouter = require('./routes/customer');
 
 app.use('/customer', customerRouter);
 

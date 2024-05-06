@@ -95,3 +95,9 @@ dist/
 # Temporary folders
 tmp/
 temp/
+
+frontend/node_modules
+
+backend/node_modules
+
+frontend/dist
