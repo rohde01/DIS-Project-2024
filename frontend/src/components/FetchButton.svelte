@@ -13,4 +13,4 @@
 
 <button on:click={fetchData}>Fetch Data</button>
 
-<count>Total users: {data.length}</count>
+<count>Total premium users in Pingo: {data.length}</count>
