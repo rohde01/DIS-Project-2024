@@ -4,21 +4,18 @@ const config = require('../db/config');
 async function getCustomerData(filterParams) {
   try {
     await sql.connect(config);
-    let query = `SELECT TOP (5000) 
+    let query = `SELECT 
       [Id]
       ,[CreatedOnUtc]
-      ,[UserSubscriptionType]
-      ,[UserCreatedFromType]
-      FROM [setup_pingodocs_dk_db_test].[dbo].[Customer]`;
+      FROM [app_pingodocs_dk_db_prod].[dbo].[Customer]`;
+
+      //setup: setup_pingodocs_dk_db_test
+      //prod: app_pingodocs_dk_db_prod
 
     // Filter
     if (filterParams) {
       const { CreatedOnUtc, LastLoginDateUtc, LastActivityDateUtc, Company, UserSubscriptionType, UserCreatedFromType } = filterParams;
       query += ` WHERE 1=1`;
-      if (CreatedOnUtc) query += ` AND [CreatedOnUtc] = '${CreatedOnUtc}'`;
-      if (LastLoginDateUtc) query += ` AND [LastLoginDateUtc] = '${LastLoginDateUtc}'`;
-      if (LastActivityDateUtc) query += ` AND [LastActivityDateUtc] = '${LastActivityDateUtc}'`;
-      if (Company) query += ` AND [Company] = '${Company}'`;
       if (UserSubscriptionType) query += ` AND [UserSubscriptionType] = '${UserSubscriptionType}'`;
       if (UserCreatedFromType) query += ` AND [UserCreatedFromType] = '${UserCreatedFromType}'`;
     }
