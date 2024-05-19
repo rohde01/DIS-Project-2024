@@ -7,19 +7,18 @@ async function getCustomerData(filterParams) {
     let query = `SELECT 
       [Id]
       ,[CreatedOnUtc]
-      FROM [app_pingodocs_dk_db_prod].[dbo].[Customer]`;
-
-      //setup: setup_pingodocs_dk_db_test
-      //prod: app_pingodocs_dk_db_prod
+      FROM [app_pingodocs_dk_db_prod].[dbo].[Customer] WHERE [UserSubscriptionType] != 0 AND [UserSubscriptionType] != 6`;
 
     // Filter
     if (filterParams) {
-      const { CreatedOnUtc, LastLoginDateUtc, LastActivityDateUtc, Company, UserSubscriptionType, UserCreatedFromType } = filterParams;
-      query += ` WHERE 1=1`;
+      const {UserSubscriptionType, UserCreatedFromType, IsFreemiumPlusComplyMember, UserSubscriptionTypeNotEqual } = filterParams;
+      query += ` AND 1=1`;
       if (UserSubscriptionType) query += ` AND [UserSubscriptionType] = '${UserSubscriptionType}'`;
       if (UserCreatedFromType) query += ` AND [UserCreatedFromType] = '${UserCreatedFromType}'`;
+      if (IsFreemiumPlusComplyMember) query += ` AND [IsFreemiumPlusComplyMember] = '${IsFreemiumPlusComplyMember}'`;
+      if (UserSubscriptionTypeNotEqual) query += ` AND [UserSubscriptionType] != '${UserSubscriptionTypeNotEqual}'`;
     }
-
+  
     const result = await sql.query(query);
     sql.close();
     return result.recordset;
@@ -28,5 +27,4 @@ async function getCustomerData(filterParams) {
     throw err;
   }
 }
-
 module.exports = getCustomerData;
