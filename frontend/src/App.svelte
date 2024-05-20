@@ -3,6 +3,6 @@
         import LineChart from './components/LineChart.svelte';
 </script>
     
-<FetchButton url="http://localhost:3000/customer/data?UserSubscriptionType=3" />
+<!-- <FetchButton url="http://localhost:3000/customer/data?UserSubscriptionType=3" /> -->
 
-<LineChart url="http://localhost:3000/customer/data?UserSubscriptionType=3" />
+<LineChart />
