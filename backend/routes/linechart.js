@@ -1,9 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const router = express.Router();
+const LinechartRouter = express.Router();
 const getCustomerData = require('../queries/user-stats');
 
-router.get('/data', cors(), async (req, res) => {
+LinechartRouter.get('/data', cors(), async (req, res) => {
   try {
     const filterParams = req.query;
 
@@ -26,4 +26,4 @@ router.get('/data', cors(), async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = LinechartRouter;

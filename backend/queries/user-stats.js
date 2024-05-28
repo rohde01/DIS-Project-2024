@@ -7,7 +7,7 @@ async function getCustomerData(filterParams) {
     let query = `SELECT 
       [Id]
       ,[CreatedOnUtc]
-      FROM [app_pingodocs_dk_db_prod].[dbo].[Customer] WHERE [UserSubscriptionType] != 0 AND [UserSubscriptionType] != 6`;
+      FROM [dev_pingodocs_dk_db_prod].[dbo].[Customer] WHERE [UserSubscriptionType] != 0 AND [UserSubscriptionType] != 6`;
 
     // Filter
     if (filterParams) {
