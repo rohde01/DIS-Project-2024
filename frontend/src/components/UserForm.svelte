@@ -41,7 +41,7 @@
         return `PingoWelcome${randomNumbers}`;
     }
 
-    function handleSubmit() {
+    async function handleSubmit() {
         if (!validateEmail(email)) {
             alert('Please enter a valid email.');
             return;
@@ -78,9 +78,27 @@
             })
         };
 
-        successMessage = `Successfully onboarded ${firstName}`;
-        dispatcher('submit', payload);
-        console.log('Payload:', payload);
+        try {
+            const response = await fetch('http://localhost:3000/create-user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                successMessage = `Successfully onboarded ${firstName}`;
+                dispatcher('submit', payload);
+                console.log('Payload:', payload);
+            } else {
+                const errorMessage = await response.text();
+                alert(`Failed to create user: ${errorMessage}`);
+            }
+        } catch (error) {
+            alert('An error occurred');
+            console.error('Error:', error);
+        }
     }
 
     function handleTeamSelect(event) {
@@ -140,7 +158,7 @@
                 <option value="1">Freemium</option>
                 <option value="3">Premium</option>
                 <option value="2">Comply</option>
-                <option value="4">TODO:Comply-Flex)</option>
+                <option value="4">TODO:Comply-Flex</option>
             </select>
         </div>
         <div class="mb-3">
