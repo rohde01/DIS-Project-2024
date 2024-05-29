@@ -7,10 +7,8 @@ const CreateCustomer = require('./queries/create-user');
 
 const app = express();
 
-// Use CORS middleware
-app.use(cors({
-  origin: 'http://localhost' // Allow all localhost addresses
-}));
+// Use CORS middleware to allow all origins
+app.use(cors());
 
 // Middleware
 app.use(bodyParser.json());
@@ -31,6 +29,7 @@ app.post('/create-user', async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+const PORT = process.env.PORT || 3001;  // Changed port here
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
