@@ -26,7 +26,7 @@
     const dispatcher = createEventDispatcher();
 
     onMount(async () => {
-        const response = await fetch('http://localhost:3000/team');
+        const response = await fetch('http://localhost:3001/team');
         teams = await response.json();
         password = generatePassword();
     });
@@ -63,9 +63,12 @@
             team: selectedTeam,
             password,
             selectedTeamId: selectedTeam.Id,
-            ...(subscriptionType === '2' && {
+            ...(subscriptionType === '2' ? {
                 IsFreemiumPlusMember: "1",
                 IsFreemiumPlusComplyMember: "1"
+            } : {
+                IsFreemiumPlusMember: "0",
+                IsFreemiumPlusComplyMember: "0"
             }),
             ...(showOptionalFields && {
                 address,
@@ -79,7 +82,7 @@
         };
 
         try {
-            const response = await fetch('http://localhost:3000/create-user', {
+            const response = await fetch('http://localhost:3001/create-user', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

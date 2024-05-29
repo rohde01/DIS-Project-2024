@@ -4,11 +4,11 @@
         import UserForm from './components/UserForm.svelte'; 
 </script>
     
-<!-- <FetchButton url="http://localhost:3000/customer/data?UserSubscriptionType=3" /> -->
+<FetchButton url="http://localhost:3001/customer/data?UserSubscriptionType=3" />
 
 
 
-<!-- <LineChart /> -->
+<LineChart />
 
 <UserForm />
 

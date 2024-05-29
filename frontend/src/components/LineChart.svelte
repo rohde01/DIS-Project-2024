@@ -5,10 +5,10 @@
     let selectedOption = 'All'; // default option
 
     const urls = {
-        'Premium': 'http://localhost:3000/customer/data?UserSubscriptionType=3&IsFreemiumPlusComplyMember=0',
-        'Comply': 'http://localhost:3000/customer/data?IsFreemiumPlusComplyMember=1',
-        'Freemium': 'http://localhost:3000/customer/data?UserSubscriptionType=1&IsFreemiumPlusComplyMember=0',
-        'All': 'http://localhost:3000/customer/data'
+        'Premium': 'http://localhost:3001/customer/data?UserSubscriptionType=3&IsFreemiumPlusComplyMember=0',
+        'Comply': 'http://localhost:3001/customer/data?IsFreemiumPlusComplyMember=1',
+        'Freemium': 'http://localhost:3001/customer/data?UserSubscriptionType=1&IsFreemiumPlusComplyMember=0',
+        'All': 'http://localhost:3001/customer/data'
     };
 
     let url = urls[selectedOption];
