@@ -8,6 +8,13 @@ async function getTeamList() {
       let query = `SELECT 
         [Id]
         ,[Name]
+        ,[TeamIdentifier]
+        ,[SubName]
+        ,[BrandColorInHex]
+        ,[IsMasterTeam]
+        ,[IsTeamPortalStylingEnabled]
+        ,[DigitalSignatureWithSubscriptionMaxMonthly]
+        ,[LogoUrl]
         FROM [dev_pingodocs_dk_db_prod].[dbo].[1Team]`;
     
       const result = await sql.query(query);
