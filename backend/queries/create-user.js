@@ -3,7 +3,6 @@ const config = require('../db/config');
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 
-
 function hashPassword(password) {
   return crypto.createHash('sha1').update(password).digest('hex').toUpperCase();
 }
@@ -19,58 +18,18 @@ async function CreateCustomer(userData) {
     const isOfficeCommunityMember = parseInt(userData.isOfficeCommunityMember, 10);
     const UserSubscriptionType = parseInt(userData.UserSubscriptionType, 10);
 
-    // Log input data
-    console.log('Input data:', {
-      CustomerGuid: uuidv4(),
-      Username: userData.email,
-      Email: userData.email,
-      Password: userData.password,
-      PasswordFormatId: 1,
-      Active: 1,
-      Deleted: 0,
-      IsSystemAccount: 0,
-      CreatedOnUtc: new Date().toISOString(),
-      LastActivityDateUtc: new Date().toISOString(),
-      ConsentToGdpr: 1,
-      HasActiveDigitalSignatureWithSubscription: 1,
-      DigitalSignatureWithSubscriptionMaxMonthly: 1,
-      FremiumUserMaxMonthly: 1,
-      UserSubscriptionType: userData.subscriptionType,
-      AllowUploadDocuments: 0,
-      UserRegisteredFromType: 0,
-      Position: userData.position || null,
-      HourWage: userData.wage || null,
-      MailWorkflowAproved: 1,
-      MailMustReview: 1,
-      MailReviewAproved: 1,
-      MailWorkflowComment: 1,
-      MailDocumentInvitation: 1,
-      MailWorkflowShared: 1,
-      MailBusinessRegKycDk: 1,
-      EarlyDownloadType: 0,
-      UserType: 0,
-      HasTasksEnabled: 0,
-      UserIntegrationType: 0,
-      FirstName: userData.firstName,
-      LastName: userData.lastName,
-      Company: userData.company,
-      Address: userData.address || null,
-      City: userData.city || null,
-      PostalCode: userData.postalCode || null,
-      UserCreatedFromType: 0,
-      IsFreemiumPlusMember: isFreemiumPlusMember,
-      IsFreemiumPlusComplyMember: isFreemiumPlusComplyMember,
-      MailWorkflowAprovedThatWasStartetFromExternalSolution: 0,
-      SsoIncludeFilesInCallBack: 0,
-      SingleSignOnState: 0,
-      MailAddAttachments: 1,
-      MailThatWasStartetFromExternalSolutionAddAttachments: 0,
-      IsOfficeCommunityUser: isOfficeCommunityMember || 0,
-      OfficeCommunityName: userData.officeCommunityName || null
-    });
+    // Check if the TeamId exists in the 1Team table
+    const teamResult = await pool.request()
+      .input('TeamId', sql.Int, userData.selectedTeamId)
+      .query('SELECT Id FROM [dev_pingodocs_dk_db_prod].[dbo].[1Team] WHERE Id = @TeamId');
+    
+    if (teamResult.recordset.length === 0) {
+      throw new Error(`Team with Id ${userData.selectedTeamId} does not exist`);
+    }
 
     // Prepare the SQL query with placeholders for each field
     const query = `
+      DECLARE @OutputTbl TABLE (ID INT);
       INSERT INTO [dev_pingodocs_dk_db_prod].[dbo].[Customer] (
         [CustomerGuid],
         [Username],
@@ -118,7 +77,9 @@ async function CreateCustomer(userData) {
         [MailThatWasStartetFromExternalSolutionAddAttachments],
         [IsOfficeCommunityUser],
         [OfficeCommunityName]
-      ) VALUES (
+      ) 
+      OUTPUT INSERTED.ID INTO @OutputTbl(ID)
+      VALUES (
         @CustomerGuid,
         @Username,
         @Email,
@@ -165,14 +126,12 @@ async function CreateCustomer(userData) {
         @MailThatWasStartetFromExternalSolutionAddAttachments,
         @IsOfficeCommunityUser,
         @OfficeCommunityName
-      )
+      );
+      SELECT ID FROM @OutputTbl;
     `;
     
-    // Log the query
-    console.log('SQL Query:', query);
-
     // Execute the query with inputs
-    await pool.request()
+    const result = await pool.request()
       .input('CustomerGuid', sql.UniqueIdentifier, uuidv4())
       .input('Username', sql.NVarChar(1000), userData.email)
       .input('Email', sql.NVarChar(1000), userData.email)
@@ -216,13 +175,39 @@ async function CreateCustomer(userData) {
       .input('SsoIncludeFilesInCallBack', sql.Bit, 0)
       .input('SingleSignOnState', sql.Bit, 0) 
       .input('MailAddAttachments', sql.Bit, 1)
-      .input('MailThatWasStartetFromExternalSolutionAddAttachments', sql.Bit, 0) // Assuming default value
+      .input('MailThatWasStartetFromExternalSolutionAddAttachments', sql.Bit, 0)
       .input('IsOfficeCommunityUser', sql.Bit, isOfficeCommunityMember || 0)
       .input('OfficeCommunityName', sql.NVarChar(sql.MAX), userData.officeCommunityName || null)
       .query(query);
     
+    // The ID of the inserted row is in result.recordset[0].ID
+    const insertedId = result.recordset[0].ID;
+    
+    // Insert into CustomerRole table
+    const AccessQuery = `
+      INSERT INTO [dev_pingodocs_dk_db_prod].[dbo].[Customer_CustomerRole_Mapping] (Customer_Id, CustomerRole_Id)
+      VALUES (@Customer_Id, @CustomerRole_Id)
+      `;
+        
+    await pool.request()
+      .input('Customer_Id', sql.Int, insertedId)
+      .input('CustomerRole_Id', sql.Int, 3)
+      .query(AccessQuery);
+        
+
+    // Map customer to team using join table
+    const SelectTeam = `
+      INSERT INTO [dev_pingodocs_dk_db_prod].[dbo].[1TeamUser] (TeamId, CustomerId)
+      VALUES (@TeamId, @CustomerId)
+      `;
+      
+    await pool.request()
+      .input('TeamId', sql.Int, userData.selectedTeamId)
+      .input('CustomerId', sql.Int, insertedId)
+      .query(SelectTeam);
+      
     // Return a success message
-    return { message: 'User created successfully' };
+    return { message: 'User created successfully and permission granted', id: insertedId };
   } catch (error) {
     console.error('Error creating user:', error.message);
     console.error('Error details:', error);
