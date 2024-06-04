@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const LinechartRouter = require('./routes/linechart');
 const TeamListRouter = require('./routes/teamlist');
 const CreateCustomer = require('./queries/create-user');
+const UpdateTeamUsers = require('./queries/update-team-users'); // Import the update function
 
 const app = express();
 
@@ -26,6 +27,19 @@ app.post('/create-user', async (req, res) => {
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ message: 'Error creating user', error: error.message });
+    }
+});
+
+// Route to handle user updates based on teamid
+app.post('/update-team-users', async (req, res) => {
+    const teamUserData = req.body;
+    console.log('Received update payload:', teamUserData);
+
+    try {
+        const result = await UpdateTeamUsers(teamUserData);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating users', error: error.message });
     }
 });
 
