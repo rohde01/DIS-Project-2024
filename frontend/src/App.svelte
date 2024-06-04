@@ -1,14 +1,18 @@
 <script>
-        import FetchButton from './components/FetchButton.svelte';
-        import LineChart from './components/LineChart.svelte';
-        import UserForm from './components/UserForm.svelte'; 
+    import FetchButton from './components/FetchButton.svelte';
+    import LineChart from './components/LineChart.svelte';
+    import UserForm from './components/UserForm.svelte';
+    import UpdateUserForm from './components/UpdateTeamUsers.svelte'; // Import the new component
 </script>
-    
-<FetchButton url="http://localhost:3001/customer/data?UserSubscriptionType=3" />
 
+<style>
+    .form-container {
+        display: flex;
+        justify-content: space-between;  
+    }
+</style>
 
-
-<LineChart />
-
-<UserForm />
-
+<div class="form-container">
+    <UserForm />
+    <UpdateUserForm />  <!-- Add the new form component -->
+</div>
