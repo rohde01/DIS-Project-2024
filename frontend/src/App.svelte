@@ -14,5 +14,7 @@
 
 <div class="form-container">
     <UserForm />
-    <UpdateUserForm />  <!-- Add the new form component -->
+    <UpdateUserForm /> 
 </div>
+
+<LineChart />

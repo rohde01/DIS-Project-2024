@@ -58,7 +58,7 @@
             });
 
             if (response.ok) {
-                successMessage = `Successfully updated users in team ${selectedTeam.name}`;
+                successMessage = `Successfully updated all users in team: ${selectedTeam.Name}!`;
                 dispatcher('submit', payload);
                 console.log('Payload:', payload);
             } else {
@@ -97,6 +97,13 @@
 {:else}
     <form on:submit|preventDefault={handleSubmit} class="flex flex-col w-80 mx-auto">
         <div class="mb-3">
+            <label for="team" class="block mb-1">Team:</label>
+            <FilteredDropdown options={teams} on:select={handleTeamSelect} />
+            {#if teamError}
+                <div class="text-red-600 mt-1">{teamError}</div>
+            {/if}
+        </div>
+        <div class="mb-3">
             <label for="userSubscriptionType" class="block mb-1">User Subscription Type:</label>
             <select id="userSubscriptionType" bind:value={userSubscriptionType} class="w-full p-2 border rounded">
                 <option value="" disabled>Select Subscription Type</option>
@@ -132,14 +139,7 @@
         </div>
         <div class="mb-3">
             <label for="officeCommunityName" class="block mb-1">Office Community Name:</label>
-            <input type="text" id="officeCommunityName" bind:value={officeCommunityName} class="w-full p-2 border rounded" />
-        </div>
-        <div class="mb-3">
-            <label for="team" class="block mb-1">Team:</label>
-            <FilteredDropdown options={teams} on:select={handleTeamSelect} />
-            {#if teamError}
-                <div class="text-red-600 mt-1">{teamError}</div>
-            {/if}
+            <input type="text" id="officeCommunityName" placeholder="Leave empty for no updates.." bind:value={officeCommunityName} class="w-full p-2 border rounded" />
         </div>
         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Update Users</button>
     </form>
