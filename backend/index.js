@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const LinechartRouter = require('./routes/linechart');
 const TeamListRouter = require('./routes/teamlist');
 const CreateCustomer = require('./queries/create-user');
-const UpdateTeamUsers = require('./queries/update-team-users'); // Import the update function
+const UpdateTeamUsers = require('./queries/update-team-users');
+const DeleteTeams = require('./queries/delete-team'); 
 
 const app = express();
 
@@ -40,6 +41,19 @@ app.post('/update-team-users', async (req, res) => {
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ message: 'Error updating users', error: error.message });
+    }
+});
+
+// Route to handle team deletion based on teamid
+app.post('/delete-teams', async (req, res) => {
+    const { TeamIdList } = req.body;  // Destructure TeamIdList from the request body
+    console.log('Received delete payload:', TeamIdList);
+
+    try {
+        const result = await DeleteTeams(TeamIdList);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting teams', error: error.message });
     }
 });
 
