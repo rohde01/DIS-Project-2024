@@ -1,9 +1,15 @@
 const sql = require('mssql');
 const config = require('../db/config');
+let pool;
 
 async function getCustomerData(filterParams) {
   try {
-    await sql.connect(config);
+    if (!pool) {
+      pool = new sql.ConnectionPool(config);
+      pool.on('error', err => console.error('Connection Pool Error: ', err));
+      await pool.connect();
+    }
+
     let query = `SELECT 
       [Id]
       ,[CreatedOnUtc]
@@ -19,12 +25,12 @@ async function getCustomerData(filterParams) {
       if (UserSubscriptionTypeNotEqual) query += ` AND [UserSubscriptionType] != '${UserSubscriptionTypeNotEqual}'`;
     }
   
-    const result = await sql.query(query);
-    sql.close();
+    const result = await pool.request().query(query);
     return result.recordset;
   } catch (err) {
     console.error('Failed to connect:', err);
     throw err;
   }
 }
+
 module.exports = getCustomerData;
