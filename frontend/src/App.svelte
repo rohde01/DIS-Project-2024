@@ -2,7 +2,8 @@
     import FetchButton from './components/FetchButton.svelte';
     import LineChart from './components/LineChart.svelte';
     import UserForm from './components/UserForm.svelte';
-    import UpdateUserForm from './components/UpdateTeamUsers.svelte'; // Import the new component
+    import UpdateUserForm from './components/UpdateTeamUsers.svelte';
+    import DeleteTeams from './components/DeleteTeams.svelte'; // Correct import for the new component
 </script>
 
 <style>
@@ -15,6 +16,7 @@
 <div class="form-container">
     <UserForm />
     <UpdateUserForm /> 
+    <DeleteTeams />
 </div>
 
 <LineChart />

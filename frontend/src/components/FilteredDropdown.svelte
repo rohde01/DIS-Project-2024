@@ -2,16 +2,24 @@
     import { createEventDispatcher, onMount, onDestroy } from 'svelte';
     let searchQuery = '';
     export let options = [];
-    export let selected = '';
+    export let selected = [];
     const dispatcher = createEventDispatcher();
 
     let isOpen = false;
     let dropdown;
 
     function selectOption(option) {
-        searchQuery = option.Name;
+        if (!selected.includes(option)) {
+            selected = [...selected, option];
+        }
+        searchQuery = ''; // Clear the search input after selection
         dispatcher('select', option);
         isOpen = false;
+    }
+
+    function removeOption(option) {
+        selected = selected.filter(item => item !== option);
+        dispatcher('remove', option);
     }
 
     $: filteredOptions = options.filter(option => 
@@ -40,4 +48,13 @@
             <div on:click={() => selectOption(option)} class="p-2 cursor-pointer hover:bg-gray-200">{option.Name}</div>
         {/each}
     </div>
+    {#if selected.length > 0}
+        <div class="mt-2">
+            {#each selected as option}
+                <div class="inline-block bg-gray-200 p-1 m-1 rounded">
+                    {option.Name} <span class="cursor-pointer" on:click={() => removeOption(option)}>x</span>
+                </div>
+            {/each}
+        </div>
+    {/if}
 </div>
