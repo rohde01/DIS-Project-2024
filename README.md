@@ -28,7 +28,7 @@ git clone git@github.com:rohde01/DIS-Project-2024.git
 Change into the project directory:
 
 ```bash
-cd DIS-Project
+cd DIS-Project-2024
 ```
 
 ### Step 3: Install dependencies 
