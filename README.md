@@ -49,6 +49,12 @@ npm start
 
 This command will start the backend server and the frontend development server concurrently.
 
+PLEASE NOTE: The database for the project is a copy of Pingo Documents original database hosted on Simply.com. Unecesssary data for this project is deleted and personal information from teams and customers are censored. When the project is started, connection to simply.com will happen automatically  
+
 ### Step 5: Open the application
 
 The backend server is now running on http://localhost:3001 and the application is accesible on http://localhost:5173 (please doublecheck terminal output as address may vary)
+
+### Step 6: Navigate the dashboard
+
+Use the sidebar to explore the different features. Should be self-explanatory. 
