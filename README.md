@@ -20,7 +20,7 @@ This project consists of a frontend and a backend. The backend is written in Nod
 First, clone the repository to your local machine using git. Open your terminal and run:
 
 ```bash
-git clone git@github.com:rohde01/DIS-Project.git
+git@github.com:rohde01/DIS-Project-2024.git
 ```
 
 ### Step 2: Navigate to the project directory
